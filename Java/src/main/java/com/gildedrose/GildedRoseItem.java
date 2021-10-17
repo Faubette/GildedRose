@@ -1,23 +1,11 @@
 package com.gildedrose;
 
 public class GildedRoseItem {
-	final Item item;
+	private final Item item;
 	
 	private GildedRoseItem(Item item) {
 		this.item = item;
 	}
-	public static void decrementationQuality(Item item) {
-		if (item.quality > 0) {
-			item.quality = item.quality - 1;
-		}
-	}
-
-	public static void incrementationQuality(Item item) {
-		if (item.quality < 50) {
-			item.quality = item.quality + 1;
-		}
-	}
-
 	public static boolean isSulfuras(Item item) {
 		return item.name.equals("Sulfuras, Hand of Ragnaros");
 	}
@@ -54,7 +42,7 @@ public class GildedRoseItem {
 		}
 	
 		if (!isSulfuras(item)) {
-			item.sellIn = item.sellIn - 1;
+			decrementationSellIn();
 		}
 	
 		if (hasExpired()) {
@@ -62,7 +50,7 @@ public class GildedRoseItem {
 				incrementationQuality();
 			} else {
 				if (isBackstagePasses()) {
-					item.quality = 0;
+					setNoQuality();
 				} else {
 					if (!isSulfuras()) {
 						decrementationQuality();
@@ -70,6 +58,12 @@ public class GildedRoseItem {
 				}
 			}
 		}
+	}
+	public void setNoQuality() {
+		item.quality = 0;
+	}
+	public void decrementationSellIn() {
+		item.sellIn = item.sellIn - 1;
 	}
 	public boolean hasExpired() {
 		return expireBy(0);
@@ -85,11 +79,15 @@ public class GildedRoseItem {
 		return isBackstagePasses(item);
 	}
 	public void decrementationQuality() {
-		decrementationQuality(item);
+		if (item.quality > 0) {
+			item.quality = item.quality - 1;
+		}
 	}
 	
 	public void incrementationQuality() {
-		incrementationQuality(item);
+		if (item.quality < 50) {
+			item.quality = item.quality + 1;
+		}
 	}
 	public boolean isAgedBrie() {
 		return isAgedBrie(item);
